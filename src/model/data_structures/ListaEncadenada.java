@@ -1,6 +1,6 @@
 package model.data_structures;
 
-public class ListaEncadenada<T> implements IListaEncadenada<T> {
+public class ListaEncadenada<T extends Comparable<T>> implements IListaEncadenada<T> {
 	// apuntador a primer elemento
 	private Node<T> primerElemento;
 

@@ -19,7 +19,7 @@ public class Modelo {
 	 * Atributos del modelo del mundo
 	 */
 
-	private ListaEncadenada<Multa> lista;
+	private Multa[] arreglo;
 
 	private PrimeraClase prClase;
 	private final static String path2 = "./data/comparendos_dei_2018_small.geojson";
@@ -27,11 +27,10 @@ public class Modelo {
 	private final static String path = "./data/comparendos_dei_2018.geojson";
 
 	/**
-	 * Constructor del modelo del mundo con capacidad predefinida
+	 * Constructor del modelo del mundo
 	 */
 	public Modelo() {
 		Gson gson = new Gson();
-		lista = new ListaEncadenada<Multa>();
 		try {
 			FileInputStream inputStream = new FileInputStream(path);
 			InputStreamReader ISReader = new InputStreamReader(inputStream);
@@ -46,14 +45,12 @@ public class Modelo {
 	}
 
 	/**
-	 * Se crea la lista con base en los datos cargados
+	 * Se crea el arreglo con base en los datos cargados
 	 */
 
-	public void crearLista() {
-		Multa[] multas = prClase.getFeatures();
-		for (Multa multa : multas) {
-			agregar(multa);
-		}
+	public Comparable[] copiarComparendos() {
+		arreglo = prClase.getFeatures().clone();
+		return arreglo;
 	}
 
 	/**
@@ -61,59 +58,50 @@ public class Modelo {
 	 * 
 	 * @return numero de elementos presentes en el modelo
 	 */
-	public int darTamanoLista() {
-		return lista.darTamano();
+	public int darTamanoArreglo() {
+		return arreglo.length;
 	}
 
-	/**
-	 * Requerimiento de agregar dato
-	 * 
-	 * @param dato
-	 */
+	public Comparable[] retornarComparendos(Comparable[] x) {
+		Comparable[] resp = new Comparable[10];
+		for (int i = 0; i < 11; i++) {
+			resp[i] = x[i];
+		}
+		int y = 10;
+		for (int j = x.length - 11; j < x.length; j++) {
+			resp[y] = x[j];
+			y++;
+		}
+		return resp;
 
-	public void agregar(Multa dato) {
-
-		lista.agregarElemento(dato);
 	}
 
-	/**
-	 * Requerimiento eliminar dato
-	 * 
-	 * @param dato
-	 *            Dato a eliminar
-	 * @return dato eliminado
-	 */
-
-	public void eliminar(Multa dato) {
-		lista.eliminarElemento(dato);
-	}
-
-	public Multa getMultaMayorOBID() {
-		return lista.darUltimoElemento();
-	}
-
-	public String zonaMinMax() {
-		double minLat = 100;
-		double maxLat = 0;
-		double minLon = 100;
-		double maxLon = 0;
-		Node<Multa> actual = lista.darPrimeraPosicion();
-		while (actual != null) {
-			if (actual.getElemento().getGeometry().getCoord()[0] < minLat) {
-				minLat = actual.getElemento().getGeometry().getCoord()[0];
-			} else if (actual.getElemento().getGeometry().getCoord()[0] > maxLat) {
-				maxLat = actual.getElemento().getGeometry().getCoord()[0];
+	public void shellSort(Comparable[] x) {
+		int size1 = x.length;
+		int h = 1;
+		while (h < size1 / 3)
+			h = 3 * h + 1;
+		while (h >= 1) {
+			for (int i = h; i < size1; i++) {
+				Comparable temp = x[i];
+				int j;
+				for (j = i; j >= h && x[j - h].compareTo(temp) > 0; j -= h) {
+					x[j] = x[j - h];
+				}
+				x[j] = temp;
 			}
-			if (actual.getElemento().getGeometry().getCoord()[1] < minLon) {
-				minLon = actual.getElemento().getGeometry().getCoord()[1];
-			} else if (actual.getElemento().getGeometry().getCoord()[1] > maxLon) {
-				maxLon = actual.getElemento().getGeometry().getCoord()[1];
-			}
-			actual = actual.getSiguiente();
-
 		}
 
-		return "La minima Latitud es: " + minLat + "\nLa minima Longitud es: " + minLon + "\nLa minima Latitud es:"
-				+ maxLat + "\nLa maxima Longitud es:" + maxLon;
 	}
+
+	public Comparable[] retornarComparendos2(Comparable[] x) {
+		Comparable[] resp = new Comparable[10];
+		int y = 1;
+		for (int j = x.length - 11; j < x.length; j++) {
+			resp[y] = x[j];
+			y++;
+		}
+		return resp;
+	}
+
 }
